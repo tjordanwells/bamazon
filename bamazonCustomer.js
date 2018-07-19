@@ -46,12 +46,14 @@ function shop() {
     inquirer.prompt(startShop).then(function(answer) {
         connection.query("SELECT * FROM products", function(err, res) {
             if (err) throw err;
-            for (var i = 0; i < res.length; i++) {
-                if (answer.askID === res[i].item_id) {
-                    console.log(res.product_name)
-                } else {
-                    console.log("Item not found...")
-                };
+            var product = res[answer.askID - 1];
+            if (answer.askHowMany <= product.stock_quantity) {
+            connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: (product.stock_quantity - answer.askHowMany)}, {item_id: answer.askID}], function(err, res) {
+                if (err) throw err;
+                console.log("Great! Your total today will be " + product.price * answer.askHowMany);
+                });
+            } else {
+                console.log("Insufficient quantity!");
             };
         });
     });
