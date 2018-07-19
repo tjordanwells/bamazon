@@ -48,7 +48,13 @@ function shop() {
             if (err) throw err;
             var product = res[answer.askID - 1];
             if (answer.askHowMany <= product.stock_quantity) {
-            connection.query("UPDATE products SET ? WHERE ?",[{stock_quantity: (product.stock_quantity - answer.askHowMany)}, {item_id: answer.askID}], function(err, res) {
+            connection.query("UPDATE products SET ? WHERE ?",[
+                {
+                    stock_quantity: (product.stock_quantity - answer.askHowMany)
+                }, 
+                {
+                    item_id: answer.askID
+                }], function(err, res) {
                 if (err) throw err;
                 console.log("Great! Your total today will be " + product.price * answer.askHowMany);
                 });
@@ -58,4 +64,3 @@ function shop() {
         });
     });
 };
-
